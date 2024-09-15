@@ -1,4 +1,13 @@
 package com.sparta.board.repository;
 
-public class CommentRepository {
+import com.sparta.board.dto.comment.CommentDto;
+import com.sparta.board.entity.Comment;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+    List<Comment> findAllCommentByBoardId(Long boardId);
+
+    List<CommentDto> findByBoardId(Long id);
 }
