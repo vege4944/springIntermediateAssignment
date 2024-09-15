@@ -1,5 +1,6 @@
 package com.sparta.board.service;
 
+import com.sparta.board.dto.board.BoardNewsFeedDto;
 import com.sparta.board.dto.board.BoardRequestDto;
 import com.sparta.board.dto.board.BoardResponseDto;
 import com.sparta.board.dto.board.BoardWithCommentResponseDto;
@@ -8,6 +9,9 @@ import com.sparta.board.entity.Board;
 import com.sparta.board.repository.BoardRepository;
 import com.sparta.board.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +78,22 @@ public class BoardService {
         return dtoList;
     }
 
+    // board newsfeed page
+    public Page<BoardNewsFeedDto> getBoardNewsFeed(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Board> boardPage = boardRepository.findAllByOrderByModifiedAtDesc(pageable);
+        return boardPage.map(board -> new BoardNewsFeedDto(
+                board.getId(),
+                board.getUsername(),
+                board.getTitle(),
+                board.getContents(),
+                board.getCreatedAt(),
+                board.getModifiedAt(),
+                commentRepository.countByBoardId(board.getId()) //commentRepository 에서 조회하고 있는 boardId를 가진 총 댓글의 개수를 반환
+        ));
+    }
+
+
 
     @Transactional
     public BoardResponseDto updateBoardByBoardId(Long boardId, BoardRequestDto boardRequestDto) { // 일정 수정
@@ -92,4 +112,5 @@ public class BoardService {
                 board.getModifiedAt()
         );
     }
+
 }
