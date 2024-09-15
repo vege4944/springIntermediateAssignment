@@ -58,6 +58,7 @@ public class BoardService {
         );
     }
 
+    // 일정 전체 조회
     public List<BoardWithCommentResponseDto> getAllBoards() {
         List<Board> boardList = boardRepository.findAll();
 
@@ -78,7 +79,7 @@ public class BoardService {
         return dtoList;
     }
 
-    // board newsfeed page
+    // board 뉴스피드 페이지
     public Page<BoardNewsFeedDto> getBoardNewsFeed(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Board> boardPage = boardRepository.findAllByOrderByModifiedAtDesc(pageable);
@@ -94,9 +95,9 @@ public class BoardService {
     }
 
 
-
+    // 일정 수정
     @Transactional
-    public BoardResponseDto updateBoardByBoardId(Long boardId, BoardRequestDto boardRequestDto) { // 일정 수정
+    public BoardResponseDto updateBoardByBoardId(Long boardId, BoardRequestDto boardRequestDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new NullPointerException("찾으시는 일정이 없습니다."));
         board.updateBoard(
                 boardRequestDto.getUsername(),
@@ -113,4 +114,12 @@ public class BoardService {
         );
     }
 
+    // 일정 삭제시 해당 글의 댓글도 모두 함께 삭제
+    @Transactional
+    public void deleteBoard(Long boardId) {
+        if (!boardRepository.existsById(boardId)){ // ! = NOT
+            throw new NullPointerException("찾으시는 일정이 없습니다.");
+        }
+        boardRepository.deleteById(boardId);
+    }
 }

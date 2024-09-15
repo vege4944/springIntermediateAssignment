@@ -41,11 +41,16 @@ public class BoardController {
     }
 
 
-    @PutMapping("/{boardId}")
+    @PutMapping("/{boardId}") // 수정하기
     public BoardResponseDto updateBoardByBoardId (
             @PathVariable Long boardId,
             @RequestBody BoardRequestDto boardRequestDto
     ){
         return boardService.updateBoardByBoardId(boardId, boardRequestDto);
+    }
+
+    @DeleteMapping("/{boardId}") // 일정 삭제 시 해당 글의 댓글도 함께 삭제하기
+    public void deleteBoard(@PathVariable Long boardId){
+        boardService.deleteBoard(boardId);
     }
 }

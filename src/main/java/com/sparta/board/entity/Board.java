@@ -20,7 +20,7 @@ public class Board extends Timestamped {
     private String title;
     private String contents;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE) // 영속성 전이 기능
     private List<Comment> comments = new ArrayList<>();
 
     public Board(String username, String title, String contents) {
