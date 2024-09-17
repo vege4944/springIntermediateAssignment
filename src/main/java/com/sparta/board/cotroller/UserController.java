@@ -1,10 +1,7 @@
 package com.sparta.board.cotroller;
 
-import com.sparta.board.dto.user.UserRequestDto;
-import com.sparta.board.dto.user.UserResponseDto;
-import com.sparta.board.entity.User;
+import com.sparta.board.dto.user.*;
 import com.sparta.board.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,29 +14,29 @@ public class UserController {
     private final UserService userService;
     // 유저 생성
     @PostMapping
-    public UserResponseDto saveUser (@RequestBody UserRequestDto userSaveRequestDto){
+    public UserSaveResponseDto saveUser (@RequestBody UserSaveRequestDto userSaveRequestDto){
         return userService.saveUser(userSaveRequestDto);
     }
 
     // 유저 단건 조회
     @GetMapping("/{userId}")
-    public UserResponseDto getDetailUserByUserId (@PathVariable Long userId){
+    public UserGetResponseDto getDetailUserByUserId (@PathVariable Long userId){
         return userService.getDetailUserByUserId (userId);
     }
 
     // 유저 다건 조회
     @GetMapping
-    public List<UserResponseDto> getAllUser (){
+    public List<UserGetResponseDto> getAllUser (){
         return userService.getAllUser();
     }
 
     // 유저 수정
     @PutMapping("/{userId}")
-    public UserResponseDto updateUserByUserId (
+    public UserUpdateResponseDto updateUserByUserId (
             @PathVariable Long userId,
-            @RequestBody UserRequestDto userRequestDto
+            @RequestBody UserUpdateRequestDto userUpdateRequestDto
     ){
-        return userService.updateUserByUserId(userId, userRequestDto);
+        return userService.updateUserByUserId(userId, userUpdateRequestDto);
     }
 
     // 유저 삭제

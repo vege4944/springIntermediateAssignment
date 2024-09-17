@@ -1,7 +1,6 @@
 package com.sparta.board.service;
 
-import com.sparta.board.dto.user.UserRequestDto;
-import com.sparta.board.dto.user.UserResponseDto;
+import com.sparta.board.dto.user.*;
 import com.sparta.board.entity.User;
 import com.sparta.board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +18,13 @@ public class UserService {
 
     // 유저 생성
     @Transactional
-    public UserResponseDto saveUser(UserRequestDto userSaveRequestDto) {
+    public UserSaveResponseDto saveUser(UserSaveRequestDto userSaveRequestDto) {
         User newUser = new User(
                 userSaveRequestDto.getUsername(),
                 userSaveRequestDto.getEmail()
         );
         User user = userRepository.save(newUser);
-        return new UserResponseDto(
+        return new UserSaveResponseDto(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
@@ -35,9 +34,9 @@ public class UserService {
     }
 
     // 유저 단건 조회
-    public UserResponseDto getDetailUserByUserId(Long userId) {
+    public UserGetResponseDto getDetailUserByUserId(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(()-> new NullPointerException("찾으시는 유저가 없습니다."));
-        return new UserResponseDto (
+        return new UserGetResponseDto(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
@@ -47,12 +46,12 @@ public class UserService {
     }
 
     // 유저 다건 조회 (1. 내가 처음에 배운 방법, 다른 2가지 방법은 맨 아래 주석 참조)
-    public List<UserResponseDto> getAllUser() {
+    public List<UserGetResponseDto> getAllUser() {
         List<User> userList = userRepository.findAll();
 
-        List<UserResponseDto> dtoList = new ArrayList<>();
+        List<UserGetResponseDto> dtoList = new ArrayList<>();
         for (User user : userList) {
-            UserResponseDto dto = new UserResponseDto(
+            UserGetResponseDto dto = new UserGetResponseDto(
                     user.getId(),
                     user.getUsername(),
                     user.getEmail(),
@@ -66,13 +65,13 @@ public class UserService {
 
     // 유저 수정
     @Transactional
-    public UserResponseDto updateUserByUserId(Long userId, UserRequestDto userRequestDto) {
+    public UserUpdateResponseDto updateUserByUserId(Long userId, UserUpdateRequestDto userUpdateRequestDto) {
         User user = userRepository.findById(userId).orElseThrow(()-> new NullPointerException("찾으시는 유저가 없습니다."));
         user.updateUser(
-                userRequestDto.getUsername(),
+                userUpdateRequestDto.getUsername(),
                 user.getEmail()
         );
-        return new UserResponseDto(
+        return new UserUpdateResponseDto(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),

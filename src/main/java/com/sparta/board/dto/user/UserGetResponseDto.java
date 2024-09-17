@@ -1,23 +1,21 @@
-package com.sparta.board.dto.board;
+package com.sparta.board.dto.user;
 
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class BoardResponseDto {
+public class UserGetResponseDto {
     private final Long id;
     private final String username;
-    private final String title;
-    private final String contents;
+    private final String email;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public BoardResponseDto(Long id, String username, String title, String contents, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public UserGetResponseDto(Long id, String username, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.username = username;
-        this.title = title;
-        this.contents = contents;
+        this.email = email;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }

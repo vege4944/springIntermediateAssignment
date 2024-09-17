@@ -1,12 +1,10 @@
 package com.sparta.board.service;
 
-import com.sparta.board.dto.comment.CommentRequestDto;
-import com.sparta.board.dto.comment.CommentResponseDto;
+import com.sparta.board.dto.comment.*;
 import com.sparta.board.entity.Board;
 import com.sparta.board.entity.Comment;
 import com.sparta.board.repository.BoardRepository;
 import com.sparta.board.repository.CommentRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,16 +21,16 @@ public class CommentService {
 
     // 하나의 게시글에 댓글 생성
     @Transactional
-    public CommentResponseDto createCommentByBoardId(Long boardId, CommentRequestDto commentRequestDto) {
+    public CommentSaveResponseDto createCommentByBoardId(Long boardId, CommentSaveRequestDto commentSaveRequestDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new NullPointerException("찾으시는 글이 없습니다."));
 
         Comment comment = new Comment(
-                commentRequestDto.getUsername(),
-                commentRequestDto.getContents(),
+                commentSaveRequestDto.getUsername(),
+                commentSaveRequestDto.getContents(),
                 board
         );
         Comment savedComment = commentRepository.save(comment);
-        return new CommentResponseDto (
+        return new CommentSaveResponseDto(
                 savedComment.getId(),
                 savedComment.getUsername(),
                 savedComment.getContents(),
@@ -42,9 +40,9 @@ public class CommentService {
     }
 
     // 특정 댓글 단건 조회
-    public CommentResponseDto getDetailCommentByCommentId(Long commentId) {
+    public CommentGetResponseDto getDetailCommentByCommentId(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new NullPointerException("찾으시는 댓글이 없습니다."));
-        return new CommentResponseDto(
+        return new CommentGetResponseDto(
                 comment.getId(),
                 comment.getUsername(),
                 comment.getContents(),
@@ -54,12 +52,12 @@ public class CommentService {
     }
 
     // 하나의 게시글의 댓글 전체 조회
-    public List<CommentResponseDto> getAllCommentsByBoardId(Long boardId) {
+    public List<CommentGetResponseDto> getAllCommentsByBoardId(Long boardId) {
         List<Comment> commentsList = commentRepository.findAllCommentByBoardId(boardId);
 
-        List<CommentResponseDto> dtoList = new ArrayList<>();
+        List<CommentGetResponseDto> dtoList = new ArrayList<>();
         for (Comment comment : commentsList) {
-            CommentResponseDto dto = new CommentResponseDto(
+            CommentGetResponseDto dto = new CommentGetResponseDto(
                     comment.getId(),
                     comment.getUsername(),
                     comment.getContents(),
@@ -73,13 +71,13 @@ public class CommentService {
 
     // 특정 댓글 수정
     @Transactional
-    public CommentResponseDto updateCommentByCommentId(Long commentId, CommentRequestDto commentRequestDto) {
+    public CommentUpdateResponseDto updateCommentByCommentId(Long commentId, CommentUpdateRequestDto commentUpdateRequestDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(()-> new NullPointerException("찾으시는 댓글이 없습니다."));
         comment.updateComment(
-                commentRequestDto.getUsername(),
-                commentRequestDto.getContents()
+                commentUpdateRequestDto.getUsername(),
+                commentUpdateRequestDto.getContents()
         );
-        return new CommentResponseDto(
+        return new CommentUpdateResponseDto(
                 comment.getId(),
                 comment.getUsername(),
                 comment.getContents(),

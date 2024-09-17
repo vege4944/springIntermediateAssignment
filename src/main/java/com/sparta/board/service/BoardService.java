@@ -1,10 +1,7 @@
 package com.sparta.board.service;
 
-import com.sparta.board.dto.board.BoardNewsFeedDto;
-import com.sparta.board.dto.board.BoardRequestDto;
-import com.sparta.board.dto.board.BoardResponseDto;
-import com.sparta.board.dto.board.BoardWithCommentResponseDto;
-import com.sparta.board.dto.comment.CommentDto;
+import com.sparta.board.dto.board.*;
+import com.sparta.board.dto.comment.CommentListForBoardResponseDto;
 import com.sparta.board.entity.Board;
 import com.sparta.board.repository.BoardRepository;
 import com.sparta.board.repository.CommentRepository;
@@ -26,14 +23,14 @@ public class BoardService {
     private final CommentRepository commentRepository;
 
     @Transactional // 일정 저장
-    public BoardResponseDto createBoard (BoardRequestDto boardRequestDto){
+    public BoardSaveResponseDto createBoard (BoardSaveRequestDto boardSaveRequestDto){
         Board board = new Board(
-                boardRequestDto.getUsername(),
-                boardRequestDto.getTitle(),
-                boardRequestDto.getTitle()
+                boardSaveRequestDto.getUsername(),
+                boardSaveRequestDto.getTitle(),
+                boardSaveRequestDto.getTitle()
         );
         Board savedBoard = boardRepository.save(board);
-        return new BoardResponseDto(
+        return new BoardSaveResponseDto(
                 savedBoard.getId(),
                 savedBoard.getUsername(),
                 savedBoard.getTitle(),
@@ -45,7 +42,7 @@ public class BoardService {
 
     public BoardWithCommentResponseDto getDetailBoardByBoardId(Long boardId) { // 일정 단건 조회
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new NullPointerException("찾으시는 일정이 없습니다."));
-        List<CommentDto> commentList = commentRepository.findByBoardId(board.getId());
+        List<CommentListForBoardResponseDto> commentList = commentRepository.findByBoardId(board.getId());
 
         return new BoardWithCommentResponseDto(
                 board.getId(),
@@ -64,7 +61,7 @@ public class BoardService {
 
         List<BoardWithCommentResponseDto> dtoList = new ArrayList<>();
         for (Board board : boardList) {
-            List<CommentDto> commentList = commentRepository.findByBoardId(board.getId());
+            List<CommentListForBoardResponseDto> commentList = commentRepository.findByBoardId(board.getId());
             BoardWithCommentResponseDto dto = new BoardWithCommentResponseDto(
                     board.getId(),
                     board.getUsername(),
@@ -80,10 +77,10 @@ public class BoardService {
     }
 
     // board 뉴스피드 페이지
-    public Page<BoardNewsFeedDto> getBoardNewsFeed(int page, int size) {
+    public Page<BoardNewsFeedResponseDto> getBoardNewsFeed(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Board> boardPage = boardRepository.findAllByOrderByModifiedAtDesc(pageable);
-        return boardPage.map(board -> new BoardNewsFeedDto(
+        return boardPage.map(board -> new BoardNewsFeedResponseDto(
                 board.getId(),
                 board.getUsername(),
                 board.getTitle(),
@@ -97,14 +94,13 @@ public class BoardService {
 
     // 일정 수정
     @Transactional
-    public BoardResponseDto updateBoardByBoardId(Long boardId, BoardRequestDto boardRequestDto) {
+    public BoardUpdateResponseDto updateBoardByBoardId(Long boardId, BoardUpdateRequestDto boardUpdateRequestDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(()-> new NullPointerException("찾으시는 일정이 없습니다."));
         board.updateBoard(
-                boardRequestDto.getUsername(),
-                boardRequestDto.getTitle(),
-                boardRequestDto.getContents()
+                boardUpdateRequestDto.getTitle(),
+                boardUpdateRequestDto.getContents()
         );
-        return new BoardResponseDto(
+        return new BoardSaveResponseDto(
                 board.getId(),
                 board.getUsername(),
                 board.getTitle(),

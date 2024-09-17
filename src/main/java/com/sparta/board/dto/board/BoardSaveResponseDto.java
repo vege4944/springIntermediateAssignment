@@ -1,20 +1,22 @@
-package com.sparta.board.dto.comment;
+package com.sparta.board.dto.board;
 
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class CommentDto {
+public class BoardSaveResponseDto {
     private final Long id;
     private final String username;
+    private final String title;
     private final String contents;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public CommentDto(Long id, String username, String contents, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public BoardSaveResponseDto(Long id, String username, String title, String contents, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.username = username;
+        this.title = title;
         this.contents = contents;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
